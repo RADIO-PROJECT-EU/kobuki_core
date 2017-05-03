@@ -10,7 +10,7 @@
  ** Includes
  *****************************************************************************/
 
-#include <stdexcept>
+#include <cmath>
 #include <ecl/math.hpp>
 #include <ecl/geometry/angle.hpp>
 #include <ecl/time/sleep.hpp>
@@ -18,6 +18,7 @@
 #include <ecl/sigslots.hpp>
 #include <ecl/geometry/angle.hpp>
 #include <ecl/time/timestamp.hpp>
+#include <stdexcept>
 #include "../../include/kobuki_driver/kobuki.hpp"
 #include "../../include/kobuki_driver/packet_handler/payload_headers.hpp"
 
@@ -273,7 +274,7 @@ void Kobuki::spin()
             if( !inertia.deserialise(data_buffer) ) { fixPayload(data_buffer); break; }
 
             // Issue #274: use first imu reading as zero heading; update when reseting odometry
-            if (isnan(heading_offset) == true)
+            if (std::isnan(heading_offset) == true)
               heading_offset = (static_cast<double>(inertia.data.angle) / 100.0) * ecl::pi / 180.0;
             break;
           case Header::Cliff:
@@ -458,7 +459,7 @@ void Kobuki::getWheelJointStates(double &wheel_left_angle, double &wheel_left_an
  * @param pose_update : return the pose updates in this variable.
  * @param pose_update_rates : return the pose update rates in this variable.
  */
-void Kobuki::updateOdometry(ecl::Pose2D<double> &pose_update, ecl::linear_algebra::Vector3d &pose_update_rates)
+void Kobuki::updateOdometry(ecl::LegacyPose2D<double> &pose_update, ecl::linear_algebra::Vector3d &pose_update_rates)
 {
   diff_drive.update(core_sensors.data.time_stamp, core_sensors.data.left_encoder, core_sensors.data.right_encoder,
                       pose_update, pose_update_rates);
