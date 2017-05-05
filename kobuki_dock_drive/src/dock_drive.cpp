@@ -220,7 +220,6 @@ void DockDrive::processBumpChargeEvent(const unsigned char& bumper, const unsign
   }
   else if(bumper) {
     new_state = RobotDockingState::BUMPED;
-    //setStateVel(new_state, -0.05, 0.0);
     setStateVel(new_state, 0.0, 0.0);
     bump_remainder = 0;
   }
